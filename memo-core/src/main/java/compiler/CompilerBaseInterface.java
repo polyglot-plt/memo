@@ -21,4 +21,6 @@ public interface CompilerBaseInterface {
 
     List scanAll(SourceStream source);
 
+    boolean syntaxAnalysis(SourceStream source);
+
 }

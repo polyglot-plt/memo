@@ -21,7 +21,6 @@ public class Token<T extends Enum & TokenKindBase<T>> {
         this.line = line;
     }
 
-
     @Override
     public String toString() {
         return "<" + lexeme + " " + kind + ">";

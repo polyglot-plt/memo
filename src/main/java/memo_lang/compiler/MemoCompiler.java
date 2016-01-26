@@ -12,15 +12,23 @@
 package memo_lang.compiler;
 
 import compiler.CompilerBase;
+import compiler.errors.ErrorReporter;
 import compiler.lexical_analyzer.LexicalAnalyzer;
 import compiler.stream.SourceStream;
+import compiler.syntax_analyzer.SyntaxAnalyzer;
 import memo_lang.compiler.lexical_analyzer.Lexer;
+import memo_lang.compiler.syntax_analyzer.Parser;
 
 public class MemoCompiler extends CompilerBase<TokenKind> {
 
     @Override
     public LexicalAnalyzer<TokenKind> newLexicalAnalyzer(SourceStream in) {
         return new Lexer(in, errorReporter);
+    }
+
+    @Override
+    public SyntaxAnalyzer<TokenKind> newSyntaxAnalyzer(ErrorReporter er) {
+        return new Parser(scanner, er);
     }
 
 }

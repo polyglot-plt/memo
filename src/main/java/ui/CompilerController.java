@@ -60,4 +60,11 @@ public class CompilerController {
                 Out.writeLine(tokenList.get(i).toString());
     }
 
+    public void Analisis_sintactico(String source) {
+        Out.clear();
+        newCompiler();
+        compiler.syntaxAnalysis(new StringSourceStream(source));
+        report("Syntax analysis OK!");
+    }
+
 }

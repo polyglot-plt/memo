@@ -16,6 +16,7 @@ import compiler.errors.ErrorReporter;
 import compiler.lexical_analyzer.LexicalAnalyzer;
 import compiler.lexical_analyzer.Token;
 import compiler.stream.SourceStream;
+import compiler.syntax_analyzer.SyntaxAnalyzer;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public abstract class CompilerBase<K extends Enum<K> & TokenKindBase<K>> impleme
 
     protected LexicalAnalyzer<K> scanner;
     protected ErrorReporter errorReporter;
+    protected SyntaxAnalyzer<K> parser;
 
     public ErrorReporter newErrorReporter() {
         return new ErrorReporter();
@@ -40,6 +42,16 @@ public abstract class CompilerBase<K extends Enum<K> & TokenKindBase<K>> impleme
         errorReporter = newErrorReporter();
         scanner = newLexicalAnalyzer(source);
         return scanner.allTokens();
+    }
+
+    public abstract SyntaxAnalyzer<K> newSyntaxAnalyzer(ErrorReporter errorReporter);
+
+    @Override
+    public boolean syntaxAnalysis(SourceStream source) {
+        errorReporter = newErrorReporter();
+        scanner = newLexicalAnalyzer(source);
+        parser = newSyntaxAnalyzer(errorReporter);
+        return parser.parse();
     }
 
 }
