@@ -6,4 +6,9 @@ public class ASTIdentifierValue extends ASTIdentifier {
         super(line);
     }
 
+    @Override
+    public Object visit(Visitor visitor) {
+        return visitor.visit(this);
+    }
+
 }

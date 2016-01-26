@@ -6,4 +6,9 @@ public class ASTIntValue extends ASTSymbol {
         super(line);
     }
 
+    @Override
+    public Object visit(Visitor visitor) {
+        return visitor.visit(this);
+    }
+
 }

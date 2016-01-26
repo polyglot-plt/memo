@@ -9,4 +9,9 @@ public class ASTExpressionMult extends ASTExpressionBinary {
         super(izq, der, line);
     }
 
+    @Override
+    public Object visit(Visitor visitor) {
+        return visitor.visit(this);
+    }
+
 }

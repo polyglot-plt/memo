@@ -11,4 +11,9 @@ public class ASTInstructionAssig extends ASTInstruction {
         this.expresion = expresion;
     }
 
+    @Override
+    public Object visit(Visitor visitor) {
+        return visitor.visit(this);
+    }
+
 }

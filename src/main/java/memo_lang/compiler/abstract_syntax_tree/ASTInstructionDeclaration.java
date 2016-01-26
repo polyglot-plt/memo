@@ -17,4 +17,8 @@ public class ASTInstructionDeclaration extends ASTInstruction {
         super(0);
     }
 
+    @Override
+    public Object visit(Visitor visitor) {
+        return visitor.visit(this);
+    }
 }

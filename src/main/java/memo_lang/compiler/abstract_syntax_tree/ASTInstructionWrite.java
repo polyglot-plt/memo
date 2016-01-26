@@ -9,4 +9,9 @@ public class ASTInstructionWrite extends ASTInstruction {
         this.expresion = expresion;
     }
 
+    @Override
+    public Object visit(Visitor visitor) {
+        return visitor.visit(this);
+    }
+
 }

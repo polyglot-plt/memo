@@ -6,4 +6,9 @@ public class ASTFloatValue extends ASTSymbol {
         super(line);
     }
 
+    @Override
+    public Object visit(Visitor visitor) {
+        return visitor.visit(this);
+    }
+
 }
