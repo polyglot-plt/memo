@@ -1,0 +1,5 @@
+int a;
+int b;
+a = 4;
+b = a+ 3;
+write b + 13;
