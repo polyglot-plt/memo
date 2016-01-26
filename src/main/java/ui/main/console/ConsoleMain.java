@@ -29,7 +29,7 @@ public class ConsoleMain {
         URL url = Resources.getResource("tests/memoTest1.txt");
         String source = Resources.toString(url, Charsets.UTF_8);
 
-        compiler.semanticAnalysis(source);
+        compiler.compile(source);
 
     }
 

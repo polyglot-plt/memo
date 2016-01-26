@@ -8,23 +8,21 @@
  * MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. Please refer to the
  * AGPL (http:www.gnu.org/licenses/agpl-3.0.txt) for more details.
  */
-package compiler;
 
-import compiler.abstract_syntax_tree.AST;
-import compiler.errors.ErrorReporter;
-import compiler.stream.SourceStream;
+package memo_lang.compiler;
 
-import java.util.List;
+public enum OperatorsKind {
 
-public interface CompilerBaseInterface {
+    haltOp,
+    newIntOp,
+    newFloatOp,
+    multFloatOp,
+    multIntOp,
+    sumIntOp,
+    sumFloatOp,
+    storeOp,
+    writeOp,
+    loadDirOp,
+    loadOp,
 
-    List scanAll(SourceStream source);
-
-    AST syntaxAnalysis(SourceStream source);
-
-    AST semanticAnalysis(SourceStream source);
-
-    List<String> compile(SourceStream source);
-
-    ErrorReporter getErrorReporter();
 }

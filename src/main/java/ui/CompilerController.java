@@ -1,7 +1,7 @@
 /**
  * Author José Albert Cruz Almaguer <jalbertcruz@gmail.com>
  * Copyright 2015 by José Albert Cruz Almaguer.
- * <p>
+ * <p/>
  * This program is licensed to you under the terms of version 3 of the
  * GNU Affero General Public License. This program is distributed WITHOUT
  * ANY EXPRESS OR IMPLIED WARRANTY, INCLUDING THOSE OF NON-INFRINGEMENT,
@@ -55,6 +55,18 @@ public class CompilerController {
         newCompiler();
         compiler.semanticAnalysis(new StringSourceStream(source));
         report("Semantic analysis OK!");
+    }
+
+    public void compile(String source) {
+        Out.clear();
+        newCompiler();
+        List<String> code = compiler.compile(new StringSourceStream(source));
+        report("Compilation OK!");
+        if (!existError()) {
+            Out.writeLine("Internal form:");
+            for (int i = 0; i < code.size(); i++)
+                Out.writeLine(code.get(i));
+        }
     }
 
     private void report(String okMsg) {

@@ -12,6 +12,7 @@
 package compiler;
 
 import compiler.abstract_syntax_tree.AST;
+import compiler.architecture_base.GenPhase;
 import compiler.architecture_base.SemanticPhase;
 import compiler.architecture_base.TokenKindBase;
 import compiler.errors.ErrorReporter;
@@ -22,6 +23,7 @@ import compiler.symbols_table.SymbolInfo;
 import compiler.symbols_table.SymbolsTable;
 import compiler.syntax_analyzer.SyntaxAnalyzer;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public abstract class CompilerBase<K extends Enum<K> & TokenKindBase<K>, N extends AST> implements CompilerBaseInterface {
@@ -31,6 +33,7 @@ public abstract class CompilerBase<K extends Enum<K> & TokenKindBase<K>, N exten
     protected SymbolsTable<K, SymbolInfo<K>> symbolsTable;
     protected SyntaxAnalyzer<K, N> parser;
     protected SemanticPhase<N>[] semPhases;
+    protected GenPhase<N> generator;
 
     public ErrorReporter newErrorReporter() {
         return new ErrorReporter();
@@ -49,6 +52,8 @@ public abstract class CompilerBase<K extends Enum<K> & TokenKindBase<K>, N exten
 
     public abstract SemanticPhase<N>[] newSemanticPhases(ErrorReporter errorReporter);
 
+    public abstract GenPhase<N> newGenPhase(SymbolsTable<K, SymbolInfo<K>> symbolsTable);
+
     private N semanticAnalysis(N tree) {
         int i = 0;
         while (errorReporter.isEmpty() && i < semPhases.length) {
@@ -56,6 +61,14 @@ public abstract class CompilerBase<K extends Enum<K> & TokenKindBase<K>, N exten
             i++;
         }
         return tree;
+    }
+
+    private List<String> codeGeneration(N tree) {
+        List<String> result = new LinkedList<String>();
+        if (errorReporter.isEmpty()) {
+            result = generator.genCode(tree);
+        }
+        return result;
     }
 
     @Override
@@ -79,6 +92,13 @@ public abstract class CompilerBase<K extends Enum<K> & TokenKindBase<K>, N exten
         N analysis = syntaxAnalysis(source);
         semPhases = newSemanticPhases(errorReporter);
         return semanticAnalysis(analysis);
+    }
+
+    @Override
+    public List<String> compile(SourceStream source) {
+        N analysis = semanticAnalysis(source);
+        generator = newGenPhase(symbolsTable);
+        return codeGeneration(analysis);
     }
 
 }
