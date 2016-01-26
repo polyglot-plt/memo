@@ -1,7 +1,7 @@
 /**
  * Author José Albert Cruz Almaguer <jalbertcruz@gmail.com>
  * Copyright 2015 by José Albert Cruz Almaguer.
- * <p/>
+ * <p>
  * This program is licensed to you under the terms of version 3 of the
  * GNU Affero General Public License. This program is distributed WITHOUT
  * ANY EXPRESS OR IMPLIED WARRANTY, INCLUDING THOSE OF NON-INFRINGEMENT,
@@ -13,8 +13,11 @@ package ui;
 
 import compiler.CompilerBaseInterface;
 import compiler.errors.ErrorReporter;
+import compiler.runtime.Interpreter;
+import compiler.runtime.operators.RuntimeOperator;
 import compiler.stream.StringSourceStream;
 import memo_lang.compiler.MemoCompiler;
+import memo_lang.compiler.MemoLoader;
 import ui.io.GeneralConsole;
 import ui.io.Out;
 
@@ -60,13 +63,19 @@ public class CompilerController {
     public void compile(String source) {
         Out.clear();
         newCompiler();
-        List<String> code = compiler.compile(new StringSourceStream(source));
+        compiler.compile(new StringSourceStream(source));
         report("Compilation OK!");
+    }
+
+    public void interpret(String source) {
+        Out.clear();
+        newCompiler();
+        List<String> code = compiler.compile(new StringSourceStream(source));
         if (!existError()) {
-            Out.writeLine("Internal form:");
-            for (int i = 0; i < code.size(); i++)
-                Out.writeLine(code.get(i));
-        }
+            Interpreter interpreter = new Interpreter(code, new MemoLoader());
+            interpreter.execute();
+        } else
+            reportError();
     }
 
     private void report(String okMsg) {

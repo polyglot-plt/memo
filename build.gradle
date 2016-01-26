@@ -35,10 +35,21 @@ targetCompatibility = 1.6
 
 dependencies {
     compile project(':memo-core')
+    compile project(':runtime')
+    
     compile 'com.google.guava:guava:18.0'
 }
 
 task run(type: JavaExec) {
     main = "ui.main.console.ConsoleMain"
     classpath = sourceSets.main.runtimeClasspath
+}
+
+
+project(':runtime') {
+    sourceCompatibility = 1.6
+
+    dependencies {
+        compile project(':memo-core')
+    }
 }

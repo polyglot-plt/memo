@@ -9,8 +9,12 @@
  * AGPL (http:www.gnu.org/licenses/agpl-3.0.txt) for more details.
  */
 
-rootProject.name = 'memo'
+package compiler.runtime;
 
-include 'memo-core'
+import compiler.runtime.operators.RuntimeOperator;
 
-include 'runtime'
+public interface Loader {
+    RuntimeOperator createOperation(String o);
+
+    Object[] createConstantValue(String type, String pos, String value);
+}
