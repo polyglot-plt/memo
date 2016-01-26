@@ -15,6 +15,7 @@ import compiler.abstract_syntax_tree.AST;
 import compiler.errors.ErrorReporter;
 import compiler.errors.SyntacticError;
 import compiler.lexical_analyzer.LexicalAnalyzer;
+import compiler.symbols_table.*;
 import compiler.syntax_analyzer.SyntaxAnalyzer;
 import memo_lang.compiler.MemoTypes;
 import memo_lang.compiler.TokenKind;
@@ -40,8 +41,8 @@ public class Parser extends SyntaxAnalyzer<TokenKind, AST> {
             firstF2, firstF3,
             firstF4;
 
-    public Parser(LexicalAnalyzer<TokenKind> in, ErrorReporter er) {
-        super(in, er);
+    public Parser(LexicalAnalyzer<TokenKind> in, SymbolsTable<TokenKind, SymbolInfo<TokenKind>> st, ErrorReporter er) {
+        super(in, st, er);
 
         firstIs1 = mkFirsts(
                 Write, Int,
@@ -125,8 +126,10 @@ public class Parser extends SyntaxAnalyzer<TokenKind, AST> {
         int productionSelected = selectProduction(firstAI1);
         switch (productionSelected) {
             case 1:
+                st.define(new VariableSymbol<TokenKind>(ct.lexeme, (TokenKind) ct.kind));
+                ct.entry = st.resolve(ct.lexeme);
                 ASTIdentifierReference idref = new ASTIdentifierReference(
-                        ct.line
+                        ct.entry, ct.line
                 );
                 match(Id);
                 match(Assignment);
@@ -148,10 +151,12 @@ public class Parser extends SyntaxAnalyzer<TokenKind, AST> {
         switch (productionSelected) {
             case 1:
                 MemoTypes type = Type() == Int ? MemoTypes.Int : MemoTypes.Float;
+                st.define(new BuiltInTypeSymbol<TokenKind>(ct.lexeme, (TokenKind) ct.kind));
+                ct.entry = st.resolve(ct.lexeme);
                 result = new ASTInstructionDeclaration(
                         type,
                         new ASTIdentifierDeclaration(
-                                ct.line
+                                ct.entry, ct.line
                         ),
                         ct.line
                 );
@@ -275,20 +280,26 @@ public class Parser extends SyntaxAnalyzer<TokenKind, AST> {
                 match(RightParen);
                 break;
             case 2:
+                st.define(new VariableSymbol<TokenKind>(ct.lexeme, (TokenKind) ct.kind));
+                ct.entry = st.resolve(ct.lexeme);
                 result = new ASTIdentifierValue(
-                        ct.line
+                        ct.entry, ct.line
                 );
                 match(Id);
                 break;
             case 3:
+                st.define(new LliteralSymbol<TokenKind>(ct.lexeme, (TokenKind) ct.kind));
+                ct.entry = st.resolve(ct.lexeme);
                 result = new ASTIntValue(
-                        ct.line
+                        ct.entry, ct.line
                 );
                 match(IntLiteral);
                 break;
             case 4:
+                st.define(new LliteralSymbol<TokenKind>(ct.lexeme, (TokenKind) ct.kind));
+                ct.entry = st.resolve(ct.lexeme);
                 result = new ASTFloatValue(
-                        ct.line
+                        ct.entry, ct.line
                 );
                 match(FloatLiteral);
                 break;

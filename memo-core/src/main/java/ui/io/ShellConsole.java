@@ -8,5 +8,6 @@ public class ShellConsole implements GeneralConsole {
 
     @Override
     public void clear() {
+
     }
 }

@@ -8,21 +8,11 @@
  * MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. Please refer to the
  * AGPL (http:www.gnu.org/licenses/agpl-3.0.txt) for more details.
  */
-package compiler;
+
+package compiler.architecture_base;
 
 import compiler.abstract_syntax_tree.AST;
-import compiler.errors.ErrorReporter;
-import compiler.stream.SourceStream;
 
-import java.util.List;
-
-public interface CompilerBaseInterface {
-
-    List scanAll(SourceStream source);
-
-    AST syntaxAnalysis(SourceStream source);
-
-    AST semanticAnalysis(SourceStream source);
-
-    ErrorReporter getErrorReporter();
+public interface SemanticPhase<N extends AST> {
+    N apply(N o);
 }
