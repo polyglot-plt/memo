@@ -10,6 +10,7 @@
  */
 package compiler;
 
+import compiler.abstract_syntax_tree.AST;
 import compiler.errors.ErrorReporter;
 import compiler.stream.SourceStream;
 
@@ -21,6 +22,6 @@ public interface CompilerBaseInterface {
 
     List scanAll(SourceStream source);
 
-    boolean syntaxAnalysis(SourceStream source);
+    AST syntaxAnalysis(SourceStream source);
 
 }

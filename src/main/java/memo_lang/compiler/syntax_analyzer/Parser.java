@@ -1,7 +1,7 @@
 /**
  * Author José Albert Cruz Almaguer <jalbertcruz@gmail.com>
  * Copyright 2015 by José Albert Cruz Almaguer.
- * <p/>
+ * <p>
  * This program is licensed to you under the terms of version 3 of the
  * GNU Affero General Public License. This program is distributed WITHOUT
  * ANY EXPRESS OR IMPLIED WARRANTY, INCLUDING THOSE OF NON-INFRINGEMENT,
@@ -11,18 +11,23 @@
 
 package memo_lang.compiler.syntax_analyzer;
 
+import compiler.abstract_syntax_tree.AST;
 import compiler.errors.ErrorReporter;
 import compiler.errors.SyntacticError;
 import compiler.lexical_analyzer.LexicalAnalyzer;
 import compiler.syntax_analyzer.SyntaxAnalyzer;
+import memo_lang.compiler.MemoTypes;
 import memo_lang.compiler.TokenKind;
+import memo_lang.compiler.abstract_syntax_tree.*;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import static memo_lang.compiler.TokenKind.*;
 import static memo_lang.compiler.TokenKind.Float;
 
-public class Parser extends SyntaxAnalyzer<TokenKind> {
+public class Parser extends SyntaxAnalyzer<TokenKind, AST> {
 
     private Set<TokenKind>
             firstIs1, firstI1,
@@ -72,175 +77,225 @@ public class Parser extends SyntaxAnalyzer<TokenKind> {
     }
 
     @Override
-    public boolean parse() {
+    public ASTProgram parse() {
         consume();
-        Is();
+        ASTProgram program = new ASTProgram(Is());
         match(EOT);
-        return er.size() == 0;
+        return program;
     }
 
     // I -> WI | DI | AI ;
-    public void I() {
+    public ASTInstruction I() {
+        ASTInstruction result = null;
         int productionSelected = selectProduction(firstI1, firstI2, firstI3);
         switch (productionSelected) {
             case 1:
-                WI();
+                result = WI();
                 break;
             case 2:
-                DI();
+                result = DI();
                 break;
             case 3:
-                AI();
+                result = AI();
                 break;
             default:
                 er.add(new SyntacticError(ct.line));
                 recuperateUntil(SemiColon);
         }
+        return result;
     }
 
     // Is -> I Is | ;
-    public void Is() {
+    public List<ASTInstruction> Is() {
+        List<ASTInstruction> result = new LinkedList<ASTInstruction>();
         int productionSelected = selectProduction(firstIs1);
         switch (productionSelected) {
             case 1:
-                I();
-                Is();
+                result.add(I());
+                result.addAll(Is());
                 break;
             default:
         }
+        return result;
     }
 
     // AI -> Id Assignment E SemiColon ;
-    public void AI() {
+    public ASTInstructionAssig AI() {
+        ASTInstructionAssig result = null;
         int productionSelected = selectProduction(firstAI1);
         switch (productionSelected) {
             case 1:
+                ASTIdentifierReference idref = new ASTIdentifierReference(
+                        ct.line
+                );
                 match(Id);
                 match(Assignment);
-                E();
+                result = new ASTInstructionAssig(
+                        idref, E(), ct.line
+                );
                 match(SemiColon);
                 break;
             default:
                 er.add(new SyntacticError(ct.line));
         }
+        return result;
     }
 
     //    DI -> Type Id SemiColon ;
-    public void DI() {
+    public ASTInstructionDeclaration DI() {
+        ASTInstructionDeclaration result = null;
         int productionSelected = selectProduction(firstDI1);
         switch (productionSelected) {
             case 1:
-                Type();
+                MemoTypes type = Type() == Int ? MemoTypes.Int : MemoTypes.Float;
+                result = new ASTInstructionDeclaration(
+                        type,
+                        new ASTIdentifierDeclaration(
+                                ct.line
+                        ),
+                        ct.line
+                );
                 match(Id);
                 match(SemiColon);
                 break;
             default:
                 er.add(new SyntacticError(ct.line));
         }
+        return result;
     }
 
     //    Type -> Int | Float ;
-    public void Type() {
+    public TokenKind Type() {
+        TokenKind result = null;
         int productionSelected = selectProduction(firstType1, firstType2);
         switch (productionSelected) {
             case 1:
+                result = Int;
                 match(Int);
                 break;
             case 2:
+                result = Float;
                 match(Float);
                 break;
             default:
                 er.add(new SyntacticError(ct.line));
         }
+        return result;
     }
 
     //    WI -> Write E SemiColon ;
-    public void WI() {
+    public ASTInstructionWrite WI() {
+        ASTInstructionWrite result = null;
         int productionSelected = selectProduction(firstWI1);
         switch (productionSelected) {
             case 1:
                 match(Write);
-                E();
+                result = new ASTInstructionWrite(E(), ct.line);
                 match(SemiColon);
                 break;
             default:
                 er.add(new SyntacticError(ct.line));
         }
+        return result;
     }
 
     //    E -> T Mt ;
-    public void E() {
+    public ASTExpression E() {
+        ASTExpression result = null;
         int productionSelected = selectProduction(firstE1);
         switch (productionSelected) {
             case 1:
-                T();
-                Mt();
+                result = Mt(T());
                 break;
             default:
                 er.add(new SyntacticError(ct.line));
         }
+        return result;
     }
 
     //    Mt -> Sum T Mt | ;
-    public void Mt() {
+    public ASTExpression Mt(ASTExpression term) {
+        ASTExpression result;
         int productionSelected = selectProduction(firstMt1);
         switch (productionSelected) {
             case 1:
                 match(Sum);
-                T();
-                Mt();
+                ASTExpression izq = term;
+                ASTExpression der = T();
+                result = Mt(new ASTExpressionSuma(
+                        izq, der, ct.line
+                ));
                 break;
             default:
+                result = term;
         }
+        return result;
     }
 
     //    T -> F Mf ;
-    public void T() {
+    public ASTExpression T() {
+        ASTExpression result = null;
         int productionSelected = selectProduction(firstT1);
         switch (productionSelected) {
             case 1:
-                F();
-                Mf();
+                ASTExpression factor = F();
+                result = Mf(factor);
                 break;
             default:
                 er.add(new SyntacticError(ct.line));
         }
+        return result;
     }
 
     //    Mf -> Multiplication F Mf | ;
-    public void Mf() {
+    public ASTExpression Mf(ASTExpression factor) {
+        ASTExpression result;
         int productionSelected = selectProduction(firstMf1);
         switch (productionSelected) {
             case 1:
                 match(Multiplication);
-                F();
-                Mf();
+                ASTExpression izq = factor;
+                ASTExpression der = F();
+                result = Mf(new ASTExpressionMult(izq, der, ct.line));
                 break;
             default:
+                result = factor;
         }
+        return result;
     }
 
     //    F -> LeftParen E RightParen | Id | IntLiteral | FloatLiteral ;
-    public void F() {
+    public ASTExpression F() {
+        ASTExpression result = null;
         int productionSelected = selectProduction(firstF1, firstF2, firstF3, firstF4);
         switch (productionSelected) {
             case 1:
                 match(LeftParen);
-                E();
+                result = E();
                 match(RightParen);
                 break;
             case 2:
+                result = new ASTIdentifierValue(
+                        ct.line
+                );
                 match(Id);
                 break;
             case 3:
+                result = new ASTIntValue(
+                        ct.line
+                );
                 match(IntLiteral);
                 break;
             case 4:
+                result = new ASTFloatValue(
+                        ct.line
+                );
                 match(FloatLiteral);
                 break;
             default:
                 er.add(new SyntacticError(ct.line, "Incorrect expression"));
                 recuperateUntil(SemiColon);
         }
+        return result;
     }
 }

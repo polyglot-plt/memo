@@ -11,6 +11,7 @@
 
 package compiler;
 
+import compiler.abstract_syntax_tree.AST;
 import compiler.architecture_base.TokenKindBase;
 import compiler.errors.ErrorReporter;
 import compiler.lexical_analyzer.LexicalAnalyzer;
@@ -20,11 +21,11 @@ import compiler.syntax_analyzer.SyntaxAnalyzer;
 
 import java.util.List;
 
-public abstract class CompilerBase<K extends Enum<K> & TokenKindBase<K>> implements CompilerBaseInterface {
+public abstract class CompilerBase<K extends Enum<K> & TokenKindBase<K>, N extends AST> implements CompilerBaseInterface {
 
     protected LexicalAnalyzer<K> scanner;
     protected ErrorReporter errorReporter;
-    protected SyntaxAnalyzer<K> parser;
+    protected SyntaxAnalyzer<K, N> parser;
 
     public ErrorReporter newErrorReporter() {
         return new ErrorReporter();
@@ -44,10 +45,10 @@ public abstract class CompilerBase<K extends Enum<K> & TokenKindBase<K>> impleme
         return scanner.allTokens();
     }
 
-    public abstract SyntaxAnalyzer<K> newSyntaxAnalyzer(ErrorReporter errorReporter);
+    public abstract SyntaxAnalyzer<K, N> newSyntaxAnalyzer(ErrorReporter errorReporter);
 
     @Override
-    public boolean syntaxAnalysis(SourceStream source) {
+    public N syntaxAnalysis(SourceStream source) {
         errorReporter = newErrorReporter();
         scanner = newLexicalAnalyzer(source);
         parser = newSyntaxAnalyzer(errorReporter);

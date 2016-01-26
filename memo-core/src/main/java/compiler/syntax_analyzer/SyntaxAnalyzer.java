@@ -11,6 +11,7 @@
 
 package compiler.syntax_analyzer;
 
+import compiler.abstract_syntax_tree.AST;
 import compiler.architecture_base.TokenKindBase;
 import compiler.errors.ErrorReporter;
 import compiler.errors.SyntacticError;
@@ -21,7 +22,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class SyntaxAnalyzer<K extends Enum & TokenKindBase<K>> {
+public abstract class SyntaxAnalyzer<K extends Enum & TokenKindBase<K>, N extends AST> {
 
     public Token<K> ct; //cursor token
     protected LexicalAnalyzer<K> in; // from were do we get the tokens
@@ -75,5 +76,5 @@ public abstract class SyntaxAnalyzer<K extends Enum & TokenKindBase<K>> {
         return result;
     }
 
-    public abstract boolean parse();
+    public abstract N parse();
 }

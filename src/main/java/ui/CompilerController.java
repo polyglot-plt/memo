@@ -12,6 +12,7 @@
 package ui;
 
 import compiler.CompilerBaseInterface;
+import compiler.abstract_syntax_tree.AST;
 import compiler.errors.ErrorReporter;
 import compiler.stream.StringSourceStream;
 import memo_lang.compiler.MemoCompiler;
@@ -63,7 +64,7 @@ public class CompilerController {
     public void Analisis_sintactico(String source) {
         Out.clear();
         newCompiler();
-        compiler.syntaxAnalysis(new StringSourceStream(source));
+        AST res = compiler.syntaxAnalysis(new StringSourceStream(source));
         report("Syntax analysis OK!");
     }
 
