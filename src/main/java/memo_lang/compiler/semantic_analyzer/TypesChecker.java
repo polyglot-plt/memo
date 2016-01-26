@@ -17,7 +17,6 @@ import compiler.architecture_base.SemanticPhase;
 import compiler.errors.ErrorReporter;
 import compiler.errors.SemanticError;
 import compiler.symbols_table.SymbolInfo;
-import compiler.symbols_table.SymbolsTable;
 import memo_lang.compiler.MemoTypes;
 import memo_lang.compiler.TokenKind;
 import memo_lang.compiler.abstract_syntax_tree.*;
