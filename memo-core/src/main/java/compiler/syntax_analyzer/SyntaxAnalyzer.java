@@ -17,6 +17,8 @@ import compiler.errors.ErrorReporter;
 import compiler.errors.SyntacticError;
 import compiler.lexical_analyzer.LexicalAnalyzer;
 import compiler.lexical_analyzer.Token;
+import compiler.symbols_table.SymbolInfo;
+import compiler.symbols_table.SymbolsTable;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -26,10 +28,12 @@ public abstract class SyntaxAnalyzer<K extends Enum & TokenKindBase<K>, N extend
 
     public Token<K> ct; //cursor token
     protected LexicalAnalyzer<K> in; // from were do we get the tokens
+    protected SymbolsTable<K, SymbolInfo<K>> st;
     protected ErrorReporter er;
 
-    public SyntaxAnalyzer(LexicalAnalyzer<K> in, ErrorReporter er) {
+    public SyntaxAnalyzer(LexicalAnalyzer<K> in, SymbolsTable<K, SymbolInfo<K>> st, ErrorReporter er) {
         this.in = in;
+        this.st = st;
         this.er = er;
     }
 

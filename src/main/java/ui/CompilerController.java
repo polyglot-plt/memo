@@ -12,7 +12,6 @@
 package ui;
 
 import compiler.CompilerBaseInterface;
-import compiler.abstract_syntax_tree.AST;
 import compiler.errors.ErrorReporter;
 import compiler.stream.StringSourceStream;
 import memo_lang.compiler.MemoCompiler;
@@ -33,6 +32,31 @@ public class CompilerController {
         Out.setConsole(console);
     }
 
+    public void Obtener_todos_los_tokens(String source) {
+        Out.clear();
+        newCompiler();
+        List tokenList = compiler.scanAll(new StringSourceStream(source));
+        if (existError())
+            reportError();
+        else
+            for (int i = 0; i < tokenList.size(); i++)
+                Out.writeLine(tokenList.get(i).toString());
+    }
+
+    public void Analisis_sintactico(String source) {
+        Out.clear();
+        newCompiler();
+        compiler.syntaxAnalysis(new StringSourceStream(source));
+        report("Syntax analysis OK!");
+    }
+
+    public void semanticAnalysis(String source) {
+        Out.clear();
+        newCompiler();
+        compiler.semanticAnalysis(new StringSourceStream(source));
+        report("Semantic analysis OK!");
+    }
+
     private void report(String okMsg) {
         if (existError())
             reportError();
@@ -48,24 +72,6 @@ public class CompilerController {
         ErrorReporter er = compiler.getErrorReporter();
         for (int i = 0; i < er.size(); i++)
             Out.writeLine(er.get(i).toString());
-    }
-
-    public void Obtener_todos_los_tokens(String source) {
-        Out.clear();
-        newCompiler();
-        List tokenList = compiler.scanAll(new StringSourceStream(source));
-        if (existError())
-            reportError();
-        else
-            for (int i = 0; i < tokenList.size(); i++)
-                Out.writeLine(tokenList.get(i).toString());
-    }
-
-    public void Analisis_sintactico(String source) {
-        Out.clear();
-        newCompiler();
-        AST res = compiler.syntaxAnalysis(new StringSourceStream(source));
-        report("Syntax analysis OK!");
     }
 
 }

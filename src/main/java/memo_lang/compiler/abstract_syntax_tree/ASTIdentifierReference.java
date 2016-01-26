@@ -1,10 +1,11 @@
 package memo_lang.compiler.abstract_syntax_tree;
 
+import compiler.symbols_table.SymbolInfo;
+import memo_lang.compiler.TokenKind;
 
 public class ASTIdentifierReference extends ASTIdentifier {
 
-    public ASTIdentifierReference(int line) {
-        super(line);
+    public ASTIdentifierReference(SymbolInfo<TokenKind> entry, int line) {
+        super(entry, line);
     }
-
 }
