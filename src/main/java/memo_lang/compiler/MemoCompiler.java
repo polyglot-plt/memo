@@ -19,12 +19,13 @@ import compiler.stream.SourceStream;
 import compiler.syntax_analyzer.SyntaxAnalyzer;
 import memo_lang.compiler.lexical_analyzer.Lexer;
 import memo_lang.compiler.syntax_analyzer.Parser;
+import tools.lexical_analyzer.LexerBuilder;
 
 public class MemoCompiler extends CompilerBase<TokenKind, AST> {
 
     @Override
     public LexicalAnalyzer<TokenKind> newLexicalAnalyzer(SourceStream in) {
-        return new Lexer(in, errorReporter);
+        return new LexerBuilder<TokenKind>(TokenKind.class, in, errorReporter);
     }
 
     @Override
