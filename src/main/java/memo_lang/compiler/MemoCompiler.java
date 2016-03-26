@@ -14,13 +14,13 @@ package memo_lang.compiler;
 import compiler.CompilerBase;
 import compiler.lexical_analyzer.LexicalAnalyzer;
 import compiler.stream.SourceStream;
-import memo_lang.compiler.lexical_analyzer.Lexer;
+import tools.lexical_analyzer.LexerBuilder;
 
 public class MemoCompiler extends CompilerBase<TokenKind> {
 
     @Override
     public LexicalAnalyzer<TokenKind> newLexicalAnalyzer(SourceStream in) {
-        return new Lexer(in, errorReporter);
+        return new LexerBuilder<TokenKind>(TokenKind.class, in, errorReporter);
     }
 
 }
