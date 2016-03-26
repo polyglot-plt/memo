@@ -30,12 +30,24 @@ project(':memo-core') {
     targetCompatibility = 1.6
 }
 
+project(':generator-tools') {
+    sourceCompatibility = 1.8
+
+    dependencies {
+        compile project(':memo-core')
+
+        compile 'org.clojure:clojure:1.8.0'
+        compile 'language-implementations:tools.compiler:0.0.1-alpha2'
+    }
+}
+
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
 dependencies {
     compile project(':memo-core')
     compile 'com.google.guava:guava:18.0'
+    compile project(':generator-tools')
 }
 
 task run(type: JavaExec) {
