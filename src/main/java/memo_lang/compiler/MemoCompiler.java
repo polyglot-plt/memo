@@ -17,7 +17,6 @@ import compiler.errors.ErrorReporter;
 import compiler.lexical_analyzer.LexicalAnalyzer;
 import compiler.stream.SourceStream;
 import compiler.syntax_analyzer.SyntaxAnalyzer;
-import memo_lang.compiler.lexical_analyzer.Lexer;
 import memo_lang.compiler.syntax_analyzer.Parser;
 import tools.lexical_analyzer.LexerBuilder;
 

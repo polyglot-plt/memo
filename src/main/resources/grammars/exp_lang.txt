@@ -1,0 +1,22 @@
+
+Is -> I Is | ;
+
+I -> WI | DI | AI ;
+
+AI -> Id Assignment E SemiColon ;
+
+DI -> Type Id SemiColon ;
+
+Type -> Int | Float ;
+
+WI -> Write E SemiColon ;
+
+E -> T Mt ;
+
+Mt -> Sum T Mt | ;
+
+T -> F Mf ;
+
+Mf -> Multiplication F Mf | ;
+
+F -> LeftParen E RightParen | Id | IntLiteral | FloatLiteral ;

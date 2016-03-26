@@ -38,6 +38,8 @@ project(':generator-tools') {
 
         compile 'org.clojure:clojure:1.8.0'
         compile 'language-implementations:tools.compiler:0.0.1-alpha2'
+
+        compile 'com.google.guava:guava:18.0'
     }
 }
 
@@ -52,5 +54,10 @@ dependencies {
 
 task run(type: JavaExec) {
     main = "ui.main.console.ConsoleMain"
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task runParserGeneratorApp(type: JavaExec) {
+    main = "ui.main.parser_gen.ParserGeneratorMain"
     classpath = sourceSets.main.runtimeClasspath
 }
